@@ -1,0 +1,11 @@
+To-Do:
+- Implement profileRoutes with the following features:
+    - View Profile: Allows authenticated users to retrieve their profile information.
+    - Edit Profile: Enables users to update their profile details (e.g., name, email, bio).
+    - Forgot Password: Provides a way for users to initiate a password reset process (e.g., send reset link to email).
+- Ensure authentication middleware protects view and edit profile routes.
+- Implement input validation for profile updates and password reset requests.
+- Add error handling for profile and password-related operations.
+
+Completed:
+- (Completed the userRoutes like login,signup,logout with authentication)
