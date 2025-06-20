@@ -71,8 +71,8 @@ profileRouter.patch("/profile/edit", verifyToken, async (req, res) => {
       message: `Hey, your profile was updated successfully`,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    console.log(error.message);
+    return res.status(500).json({ error: error.message });
   }
 });
 
