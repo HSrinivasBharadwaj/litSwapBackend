@@ -1,11 +1,11 @@
 To-Do:
 - Implement profileRoutes with the following features:
-    - View Profile: Allows authenticated users to retrieve their profile information.
-    - Edit Profile: Enables users to update their profile details (e.g., name, email, bio).
-    - Forgot Password: Provides a way for users to initiate a password reset process (e.g., send reset link to email).
+    - Done - View Profile: Allows authenticated users to retrieve their profile information. - Done
+    - TTD - Edit Profile: Enables users to update their profile details (e.g., name, email, bio).
+    - Done - Forgot Password: Provides a way for users to initiate a password reset process - Enhancement email send link
 - Ensure authentication middleware protects view and edit profile routes.
 - Implement input validation for profile updates and password reset requests.
 - Add error handling for profile and password-related operations.
-
+- Once completing parallely go through typescript and add the typescript
 Completed:
 - (Completed the userRoutes like login,signup,logout with authentication)
