@@ -32,7 +32,7 @@ profileRouter.post("/forgotpassword", verifyToken, async (req, res) => {
         minLowercase: 1,
         minUppercase: 1,
         minNumbers: 1,
-        minSymbols: 1,
+        minSymbols: 0,
       })
     ) {
       return res.status(400).json({
