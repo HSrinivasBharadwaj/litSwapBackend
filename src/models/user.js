@@ -16,6 +16,19 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true 
+    },
+    location: {
+        type: String
+    },
+    listedBooks: {
+        type: [{type: mongoose.Schema.ObjectId}],
+        default: []
+        //Add the reference later from Books collection
+    },
+    swapRequests: {
+        type: [{type: mongoose.Schema.ObjectId}],
+        default: []
+        //Add the reference from the Swap Model later
     }
 })
 
