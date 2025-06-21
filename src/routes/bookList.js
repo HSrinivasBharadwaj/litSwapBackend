@@ -3,18 +3,15 @@ const bookRouter = express.Router();
 const verifyToken = require("../middlewares/auth");
 const book = require("../models/book");
 
-//Tomorrow TTD
 
-// GET /api/books - Get all available books (with pagination needs to be added) - Done
 
-// DELETE /api/books/:id - Delete book (only by owner) - 4
-// GET /api/books/user/:userId - Get books listed by specific user - 2
-// GET /api/books/search - Search books by title, author, or genre - 5
 
 //Get Request for all books
 bookRouter.get("/get/books", verifyToken, async (req, res) => {
   try {
-    const getAllBooks = await book.find({});
+    const getAllBooks = await book
+      .find({})
+      .populate("listedBy", "firstName lastName email");
 
     if (getAllBooks.length === 0) {
       return res.status(200).json({
@@ -35,7 +32,9 @@ bookRouter.get("/get/books", verifyToken, async (req, res) => {
 bookRouter.get("/get/book/:id", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const getBookById = await book.findById(id);
+    const getBookById = await book
+      .findById(id)
+      .populate("listedBy", "firstName lastName email");
     if (!getBookById) {
       return res.status(404).json({
         message: "Book not found",
@@ -106,7 +105,6 @@ bookRouter.post("/post/book", verifyToken, async (req, res) => {
       title,
       author,
       genre,
-      title,
       condition,
       status,
       listedBy: loggedInUser._id,
@@ -130,6 +128,7 @@ bookRouter.patch("/book/:id", verifyToken, async (req, res) => {
     if (!bookToUpdate) {
       return res.status(404).json({ message: "Book not found" });
     }
+
     if (bookToUpdate.listedBy.toString() !== loggedInUser._id.toString()) {
       return res
         .status(403)
@@ -159,23 +158,79 @@ bookRouter.patch("/book/:id", verifyToken, async (req, res) => {
 });
 
 //Delete book only by owner by id
-bookRouter.delete("/delete/book/:id",verifyToken,async(req,res) => {
+bookRouter.delete("/delete/book/:id", verifyToken, async (req, res) => {
   try {
-     const loggedInUser = req.user;
-     const {id} = req.params;
-     const findBookById = await book.findById(id);
-     if (!findBookById) {
-        return res.status(404).json({ message: "Book not found" });
-     }
-     if (findBookById.listedBy.toString() !== loggedInUser._id.toString()) {
-        return res.status(403).json({message: "Not authorized to update this book"})
-     }
-     const bookToDelete = await book.findByIdAndDelete(id);
-     return res.status(201).json({message: "Book deleted successfully",data:bookToDelete})
+    const loggedInUser = req.user;
+    const { id } = req.params;
+    const findBookById = await book.findById(id);
+    if (!findBookById) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+    if (findBookById.listedBy.toString() !== loggedInUser._id.toString()) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to delete this book" });
+    }
+    const bookToDelete = await book.findByIdAndDelete(id);
+    return res
+      .status(201)
+      .json({ message: "Book deleted successfully", data: bookToDelete });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({message:"Internal Server Error"})
+    return res.status(500).json({ message: "Internal Server Error" });
   }
-})
+});
+
+//get all the books by userId
+bookRouter.get("/get/books/user/:userId", verifyToken, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID format" });
+    }
+    const findAllBooks = await book
+      .find({ listedBy: userId })
+      .populate("listedBy", "firstName lastName email");
+
+    return res
+      .status(200)
+      .json({ message: "Fetched all books", data: findAllBooks });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// GET /api/books/search - Search books by title, author, or genre
+bookRouter.get("/get/books/search", verifyToken, async (req, res) => {
+  try {
+    const ALLOWED_SEARCH = ["title", "author", "genre"];
+    const searchKeys = Object.keys(req.query);
+    if (
+      searchKeys.length === 0 ||
+      !searchKeys.every((key) => ALLOWED_SEARCH.includes(key))
+    ) {
+      return res
+        .status(400)
+        .json({ message: "You can only search by title, author, or genre." });
+    }
+    
+    const searchQuery = {
+      $or: searchKeys.map((key) => ({
+        [key]: { $regex: req.query[key] },
+      })),
+    };
+    const getBookSearch = await book
+      .find(searchQuery)
+      .populate("listedBy", "firstName lastName email");
+    return res.status(200).json({
+      message: "Books fetched successfully",
+      books: getBookSearch,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 module.exports = bookRouter;
