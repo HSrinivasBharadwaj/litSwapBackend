@@ -23,7 +23,7 @@ const bookSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ["Available", "pending", "swapped"],
-        default: "available"
+        default: "Available"
     },
     listedBy: {
         type: mongoose.Schema.ObjectId,
