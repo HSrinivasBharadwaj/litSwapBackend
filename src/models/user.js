@@ -22,7 +22,8 @@ const userSchema = new mongoose.Schema({
     },
     listedBooks: {
         type: [{type: mongoose.Schema.ObjectId}],
-        default: []
+        default: [],
+        ref: "Book"
         //Add the reference later from Books collection
     },
     swapRequests: {
