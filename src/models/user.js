@@ -28,6 +28,7 @@ const userSchema = new mongoose.Schema({
     },
     swapRequests: {
         type: [{type: mongoose.Schema.ObjectId}],
+        ref: "Request",
         default: []
         //Add the reference from the Swap Model later
     }
