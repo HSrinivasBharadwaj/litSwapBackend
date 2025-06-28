@@ -10,28 +10,24 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: true,
-        unique: true 
+        rqeuired: true,
+        unique: true
     },
     password: {
         type: String,
-        required: true 
-    },
-    location: {
-        type: String
+        required: true
     },
     listedBooks: {
-        type: [{type: mongoose.Schema.ObjectId}],
+        type: [{type: mongoose.Schema.Types.ObjectId}],
         default: [],
         ref: "Book"
-        //Add the reference later from Books collection
     },
     swapRequests: {
-        type: [{type: mongoose.Schema.ObjectId}],
-        ref: "Request",
+        type: [{type: mongoose.Schema.Types.ObjectId}],
+        // ref: "Request",
         default: []
         //Add the reference from the Swap Model later
     }
 })
 
-module.exports = mongoose.model("User",userSchema);
+module.exports = mongoose.model("User",userSchema)

@@ -1,24 +1,31 @@
-const validateUserData = async (req) => {
+const validator = require("validator");
+const validateUser = (req) => {
   const { firstName, lastName, email, password } = req.body;
   if (!firstName || !lastName || !email || !password) {
-    throw new Error("All are required fields");
+    throw new Error("All fields are mandatory");
   }
-  if (firstName.length <= 1 || firstName.length > 15) {
-    throw new Error("First shouldbe in between 1 to 15 characters ");
+  if (firstName.length < 2 || firstName.length > 100) {
+    throw new Error("First name must be between 2 and 100 characters.")
   }
-  if (lastName.length <= 1 || firstName.length > 15) {
-    throw new Error("Last shouldbe in between 1 to 15 characters ");
+   if (lastName.length < 2 || lastName.length > 100) {
+    throw new Error("Last name must be between 2 and 100 characters.")
   }
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
+  if (!validator.isEmail(email)) {
     throw new Error("Invalid email format");
   }
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-  if (!passwordRegex.test(password)) {
+  if (
+    !validator.isStrongPassword(password, {
+      minLength: 8,
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 0,
+    })
+  ) {
     throw new Error(
-      "Password must be at least 8 characters long and contain at least one letter and one number"
+      "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number"
     );
   }
 };
 
-module.exports = validateUserData
+module.exports = validateUser;

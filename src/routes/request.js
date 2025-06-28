@@ -1,19 +1,14 @@
 const express = require('express');
 const requestRouter = express.Router();
-const swapRequest = require('../models/book');
-const verifyToken = require('../middlewares/auth');
 
-//Send Request
-//Alice send Request to Bob
-requestRouter.post("/send/request",verifyToken,async(req,res) => {
-    try {
-        const loggedInUser = req.user;
-        
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({message: "Internal Server Error"})
-    }
-})
+//Send Request - post
 
 
-module.exports = requestRouter
+//Receivers Request - see all the received request
+
+
+//Accept or Reject Request - Receivers End
+
+
+
+module.exports = requestRouter;

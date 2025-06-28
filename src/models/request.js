@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const requestSchema = new mongoose.Schema({
+const swapRequest = new mongoose.Schema({
     fromUserId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
@@ -8,21 +8,20 @@ const requestSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
-    bookId: {
+    senderbookId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Book"
     },
-    offeredBookId: {
+    requestedBookId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Book"
     },
-    
     status: {
         type: String,
-        enum: ["Pending", "Accepted", "Rejected"],
-        default: "Pending"
+        enum: ["pending", "accepted", "rejected"],
+        default: "pending"
     }
-
 },{timestamps:true})
 
-module.exports = mongoose.model("Request",requestSchema)
+
+module.exports = mongoose.model("Request",swapRequest);

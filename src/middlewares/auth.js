@@ -5,13 +5,13 @@ const verifyToken = async (req, res, next) => {
   try {
     const { token } = req.cookies;
     if (!token) {
-      throw new Error("Invalid token");
+      throw new Error("Invalid Token");
     }
-    const decodedObj = await jwt.verify(token, process.env.JWT_SECRET);
-    const { id } = decodedObj;
-    const loggedInUser = await User.findById({ _id: id });
+    const validateToken = await jwt.verify(token, process.env.JWT_SECRET);
+    const { _id } = validateToken;
+    const loggedInUser = await User.findById({ _id: _id });
     if (!loggedInUser) {
-      throw new Error("Not able to fetch the user");
+      throw new Error("Unable to fetch the user");
     }
     req.user = loggedInUser;
     next();

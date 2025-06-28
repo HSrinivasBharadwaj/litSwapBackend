@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-
 const bookSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -10,11 +9,10 @@ const bookSchema = new mongoose.Schema({
         required: true
     },
     description: {
-        type: String
+        type: String,
     },
     genre: {
-        type: String,
-        required: true
+        type: String
     },
     condition: {
         type: String,
@@ -26,7 +24,7 @@ const bookSchema = new mongoose.Schema({
         default: "Available"
     },
     listedBy: {
-        type: mongoose.Schema.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
     createdAt: {
@@ -39,4 +37,5 @@ const bookSchema = new mongoose.Schema({
     }
 },{timestamps:true})
 
-module.exports = mongoose.model("Book",bookSchema)
+
+module.exports = mongoose.model("Book",bookSchema);
