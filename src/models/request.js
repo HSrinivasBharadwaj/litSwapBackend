@@ -8,11 +8,11 @@ const swapRequest = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
-    senderbookId: {
+    bookId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Book"
     },
-    requestedBookId: {
+    offeredBookId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Book"
     },
