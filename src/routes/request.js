@@ -1,11 +1,11 @@
 const express = require("express");
 const verifyToken = require("../middlewares/auth");
 const Request = require("../models/request");
+const mongoose = require('mongoose');
 const Book = require("../models/book");
 const requestRouter = express.Router();
 
 //Send Request - post
-
 requestRouter.post("/send/request", verifyToken, async (req, res) => {
   try {
     const loggedInUser = req.user;
@@ -69,7 +69,7 @@ requestRouter.post("/send/request", verifyToken, async (req, res) => {
         .status(400)
         .json({ message: "Connection already established" });
     }
-    const newRequest = await new Request({
+    const newRequest = await Request({
       fromUserId,
       toUserId,
       bookId,
@@ -123,5 +123,44 @@ requestRouter.get("/received/requests", verifyToken, async (req, res) => {
 });
 
 //Accept or Reject Request - Receivers End
+requestRouter.post("/review/request/:status/:requestId",verifyToken,async(req,res) => {
+    try {
+        const loggedInUser = req.user;
+        const toUserId = loggedInUser._id;
+        const {status,requestId} = req.params;
+        const ALLOWED_STATUS = ["accepted", "rejected"];
+        if (!ALLOWED_STATUS.includes(status)) {
+            return res.status(400).json({message: "Invalid status only accepted and rejected are accepted"})
+        }
+        //check whether requestId exists in db
+        const isRequestIdValid = await Request.findById(requestId);
+        if (!isRequestIdValid) {
+            return res.status(404).json({
+                message: "Request not found"
+            });
+        }
+        if (isRequestIdValid.toUserId.toString() !== toUserId.toString()) {
+            return res.status(403).json({
+                message: "You are not authorized to review this request"
+            });
+        }
+        if (isRequestIdValid.status !== "pending") {
+            return res.status(400).json({
+                message: "Request has already been processed"
+            });
+        }
+        isRequestIdValid.status = status;
+        await isRequestIdValid.save();
+        return res.status(200).json({
+            message: `Request ${status} successfully`,
+            data: isRequestIdValid
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ 
+            message: "Internal Server Error" 
+        });
+    }
+})
 
 module.exports = requestRouter;
