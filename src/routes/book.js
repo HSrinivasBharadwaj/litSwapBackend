@@ -50,6 +50,7 @@ bookRouter.get("/view/book/:id", verifyToken, async (req, res) => {
 //Post Book
 bookRouter.post("/post/book", verifyToken, async (req, res) => {
   try {
+    console.log("req",req.body)
     const loggedInUser = req.user;
     const { title, author, description, genre, condition, status } = req.body;
 

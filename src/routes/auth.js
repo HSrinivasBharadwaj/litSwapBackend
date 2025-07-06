@@ -5,11 +5,10 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const validateUser = require("../utils/validate");
 
-
 userRouter.post("/user/signup", async (req, res) => {
   try {
     await validateUser(req);
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password } = req.body.formData;
 
     const findExistingUser = await User.findOne({ email: email });
     if (findExistingUser) {
@@ -42,6 +41,7 @@ userRouter.post("/user/signup", async (req, res) => {
 
 userRouter.post("/user/login", async (req, res) => {
   try {
+    console.log("req",req.body)
     const { email, password } = req.body;
     if (!email || !password) {
       return res
@@ -71,7 +71,14 @@ userRouter.post("/user/login", async (req, res) => {
         httpOnly: true,
         sameSite: "Strict",
       });
-      return res.status(200).json({ message: "Valid Creds, Logged in" });
+      return res.status(200).json({
+        message: "Valid Creds, Logged in",
+        data: {
+          firstName: findExistingUser.firstName,
+          lastName: findExistingUser.lastName,
+          email: findExistingUser.email,
+        },
+      });
     } else {
       return res.status(401).json({ message: "Invalid creds" });
     }
@@ -81,11 +88,11 @@ userRouter.post("/user/login", async (req, res) => {
   }
 });
 
-
-userRouter.post("/user/logout",async(req,res) => {
-  res.clearCookie("token",{
-    maxAge: 0})
-  return res.status(200).json({message: "User Loggedout Successfully"})
-})
+userRouter.post("/user/logout", async (req, res) => {
+  res.clearCookie("token", {
+    maxAge: 0,
+  });
+  return res.status(200).json({ message: "User Loggedout Successfully" });
+});
 
 module.exports = userRouter;

@@ -10,8 +10,11 @@ const bookRouter = require('./routes/book');
 const requestRouter = require("./routes/request");
 const port = process.env.PORT;
 
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials:true
+}));
 app.use(express.json());
-app.use(cors());
 app.use(cookieParser())
 
 app.use("/",userRouter);
